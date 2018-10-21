@@ -19,6 +19,13 @@
   padding-top: 10px;
 }
 
+.app .app-container .app-segment-controller {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+}
+
 .logo-wrapper {
   display: flex;
   justify-content: center;
