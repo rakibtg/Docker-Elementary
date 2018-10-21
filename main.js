@@ -35,7 +35,7 @@ ipcMain.on('asynchronous-message', async (event, arg) => {
 
   if(arg === 'initial-data') {
 
-    const rawContainersFromCmd = await cmdLikeAPro('docker ps -q')
+    const rawContainersFromCmd = await cmdLikeAPro('docker ps -q -a')
     const containers = rawContainersFromCmd
       .split("\n")
       .map(container => container.trim())

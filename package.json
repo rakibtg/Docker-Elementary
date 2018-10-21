@@ -5,6 +5,7 @@
   "dependencies": {
     "electron": "^3.0.5",
     "evergreen-ui": "^4.0.2",
+    "javascript-time-ago": "^1.0.31",
     "node-cmd": "^3.0.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
