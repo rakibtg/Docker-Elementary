@@ -24,10 +24,37 @@ app.on('activate', () => {
   if(win === null) createWindow()
 })
 
-ipcMain.on('asynchronous-message', (event, arg) => {
+const cmdLikeAPro = command => new Promise((resolve, reject) => {
+  cmd.get(command, (err, data, stderr) => {
+    if(err || stderr) reject(err || stderr)
+    else resolve(data)
+  })
+})
+
+ipcMain.on('asynchronous-message', async (event, arg) => {
+
   if(arg === 'initial-data') {
-    cmd.get('docker container ps', (err, data, stderr) => {
-      event.sender.send('electron-to-react', JSON.stringify({items: data, eventType:'initial-data'}))
-    })
+
+    const rawContainersFromCmd = await cmdLikeAPro('docker ps -q')
+    const containers = rawContainersFromCmd
+      .split("\n")
+      .map(container => container.trim())
+      .filter(container => container !== '')
+
+    const decoratedContainers = await Promise.all(containers.map( async container => {
+      const weAreTheFortunateOne = await cmdLikeAPro('docker container inspect '+container)
+      return JSON.parse(weAreTheFortunateOne)[0]
+    }))
+
+    event.sender.send(
+      'electron-to-react', 
+      JSON.stringify(
+        {
+          containers: decoratedContainers, 
+          eventType:'initial-data'
+        }
+      )
+    )
+
   }
 })
