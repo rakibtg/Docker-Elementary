@@ -16,12 +16,8 @@ class App extends Component {
   handleElectronRequests(event, arg) {
     const data = JSON.parse(arg)
     if(data.eventType === 'initial-data') {
-      const itemLists = data.items.split("\n")
-      // console.log(itemLists)
-      const re = /(\s+\s+)/
-      itemLists.map(i => console.log(i.split(re)))
-      // console.log(itemLists[0])
-      // console.log(itemLists[0].split(re))
+
+      console.log('Containers: ', data)
     }
   }
 
