@@ -43,7 +43,9 @@ ipcMain.on('asynchronous-message', async (event, arg) => {
 
     const decoratedContainers = await Promise.all(containers.map( async container => {
       const weAreTheFortunateOne = await cmdLikeAPro('docker container inspect '+container)
-      return JSON.parse(weAreTheFortunateOne)[0]
+      let tintContainer = JSON.parse(weAreTheFortunateOne)[0]
+      tintContainer['shortId'] = container
+      return tintContainer
     }))
 
     event.sender.send(
