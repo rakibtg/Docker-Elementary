@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Button, Text, Pane, Heading, Checkbox,
-  Badge, Switch, SegmentedControl } from 'evergreen-ui'
+  Badge, Switch, SegmentedControl, Pill, Strong } from 'evergreen-ui'
 import Logo from './logo.svg'
 
 import TimeAgo from 'javascript-time-ago'
@@ -14,14 +14,21 @@ const { ipcRenderer } = window.require("electron")
 class App extends Component {
 
   state = {
-    containers: [],
+    containers: {},
     options: [
-      { label: 'All', value: 'hourly' },
-      { label: 'Active', value: 'daily' },
-      { label: 'Stopped', value: 'monthly' },
-      { label: 'Re-starting', value: 'cd' },
+      { label: 'Containers', value: 'hourly' },
+      { label: 'Images', value: 'daily' }
     ],
     value: 'hourly',
+    filterContainers: [
+      { label: 'All', value: 'all' },
+      { label: 'Active', value: 'active' },
+      { label: 'Stopped', value: 'stopped' },
+      { label: 'Other', value: 'other' },
+    ],
+    currentFilterForContainer: 'active',
+    mouseHoveredOn: -1,
+    switches: [],
   }
 
   componentDidMount() {
@@ -40,16 +47,27 @@ class App extends Component {
   }
 
   renderHeadingStatus(state) {
-    if(state.Status === 'running') return <Badge color="green" marginRight={8}>
+    if(state.Status === 'running') return <Pill paddingLeft={10} paddingRight={10} color="green" marginRight={8}>
       {timeAgo.format(new Date(state.StartedAt))}
-    </Badge>
-    else if(state.Status === 'restarting') return <Badge color="yellow" marginRight={8}>RE-STARTING</Badge>
-    else return <Badge color="red" marginRight={8}>{state.Status}</Badge>
+    </Pill>
+    else if(state.Status === 'restarting') return <Pill paddingLeft={10} paddingRight={10} color="yellow" marginRight={8}>RE-STARTING</Pill>
+    else return <Pill paddingLeft={10} paddingRight={10} color="neutral" marginRight={8}>{state.Status}</Pill>
+  }
+
+  handleMouseHover(index) {
+    this.setState({
+      mouseHoveredOn: index
+    })
   }
 
   render() {
-    const {containers} = this.state
-    console.log('Fire:', containers.length)
+
+    const {
+      containers, mouseHoveredOn, filterContainers, 
+      currentFilterForContainer
+    } = this.state
+
+    console.log('Fire:', Object.keys(containers).length)
     return (
       <div className='app'>
         <div className='app-header'>
@@ -58,47 +76,57 @@ class App extends Component {
               <Heading size={600}>
                 <div className="logo-wrapper">
                   <img src={Logo}/>
-                  <span>Docker Elementary</span>
+                  <Strong size={500}>Docker Elementary</Strong>
                 </div>
               </Heading>
             </Pane>
             <Pane flex={1} display="flex" alignItems="center" justifyContent="center">
               <SegmentedControl
-                width={400}
-                height={24}
+                width={300}
+                height={28}
                 options={this.state.options}
                 value={this.state.value}
                 onChange={value => this.setState({ value })}
               />
             </Pane>
-            <Pane>
+            <Pane display='flex' alignItems='center'>
               <Button iconBefore="refresh" height={24} marginRight={16} appearance="primary" intent="success">Refresh</Button>
               <Button iconBefore="git-pull" height={24}>GitHub</Button>
             </Pane>
           </Pane>
+          <Pane display='flex' alignItems='center' justifyContent='center' padding={16} background='#f0f0f1'>
+            <SegmentedControl
+              width={400}
+              height={24}
+              options={filterContainers}
+              value={currentFilterForContainer}
+              onChange={value => this.setState({ currentFilterForContainer: value })}
+            />
+          </Pane>
         </div>
         <div className='app-body'>
           <div className='app-container'>
-            {/* <div className='app-segment-controller'>
-              <SegmentedControl
-                width={500}
-                height={24}
-                options={this.state.options}
-                value={this.state.value}
-                onChange={value => this.setState({ value })}
-              />
-            </div> */}
             {
-              containers.map((container, index) => <div key={index} className='container-list-wrapper'>
-                <div className='container-list-left'>
-                  <Switch height={20} checked />
+              Object.keys(containers).map((containerShortId, index) => {
+                const container = containers[containerShortId]
+                const isHovered = index === mouseHoveredOn
+                const wrapperClass = isHovered ? 'container-list-wrapper active-list' : 'container-list-wrapper inactive-list'
+                return <div key={index} className={wrapperClass}>
+                  <div className='container-list-left'>
+                    <Switch marginLeft={16} height={22} checked={container.State.Running} />
+                  </div>
+                  <div className='container-list-body' onMouseEnter={() => this.handleMouseHover(index)}>
+                    <Strong marginRight={16}>{container.Name.replace('/', '')}</Strong> 
+                    <Pill paddingLeft={10} paddingRight={10} color="neutral" marginRight={16}>{container.shortId}</Pill> 
+                    {this.renderHeadingStatus(container.State)}
+                  </div>
+                  {
+                    isHovered && <div className='container-list-right'>
+                      <Button marginRight={16} height={22} appearance='primary' intent='none'>View</Button>
+                    </div>
+                  }
                 </div>
-                <div className='container-list-body'>
-                  <Text marginRight={16}>{container.Name.replace('/', '')}</Text> 
-                  <Badge color="neutral" marginRight={16}>{container.shortId}</Badge> 
-                  {this.renderHeadingStatus(container.State)}
-                </div>
-              </div>)
+              })
             }
           </div>
         </div>
