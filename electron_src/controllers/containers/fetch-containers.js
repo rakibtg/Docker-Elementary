@@ -1,8 +1,8 @@
 const cmdLikeAPro = require('../../utilities/cmd-pro')
 
-module.exports = fetchContainers = (args) => new Promise( async (resolve, reject) => {
+module.exports = fetchContainers = (status) => new Promise( async (resolve, reject) => {
   const rawContainersFromCmd = await cmdLikeAPro('docker ps -q -a')
-  const containers = rawContainersFromCmd
+  let containers = rawContainersFromCmd
     .split("\n")
     .map(container => container.trim())
     .filter(container => container !== '')
@@ -11,7 +11,11 @@ module.exports = fetchContainers = (args) => new Promise( async (resolve, reject
     const weAreTheFortunateOne = await cmdLikeAPro('docker container inspect '+container)
     let tintContainer = JSON.parse(weAreTheFortunateOne)[0]
     tintContainer['shortId'] = container
-    results[container] = tintContainer
+    // Filter containers.
+    if(status === 'active') {
+      if(tintContainer.State.Running === true) results[container] = tintContainer
+    } else if(status === '')
+    // results[container] = tintContainer
   }))
   resolve({
     containers: results,
