@@ -32,7 +32,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.send('asynchronous-message', 'initial-data')
+    this.containerFetcher()
+  }
+
+  containerFetcher(filter = 'active') {
+    ipcRenderer.send('asynchronous-message', JSON.stringify({
+      type: 'fetch-containers',
+      options: {
+        filter,
+      }
+    }))
     ipcRenderer.on('electron-to-react', this.handleElectronRequests.bind(this))
   }
 
@@ -94,7 +103,7 @@ class App extends Component {
               <Button iconBefore="git-pull" height={24}>GitHub</Button>
             </Pane>
           </Pane>
-          <Pane display='flex' alignItems='center' justifyContent='center' padding={16} background='#f0f0f1'>
+          <Pane display='flex' alignItems='center' justifyContent='center' padding={5} background='tint1'>
             <SegmentedControl
               width={400}
               height={24}
