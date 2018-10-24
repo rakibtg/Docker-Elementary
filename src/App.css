@@ -23,11 +23,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* border: 1px solid red; */
+  position: relative;
+  height: 10px;
+  width: 90px;
 }
 
 .logo-wrapper img {
-  height: 30px;
-  padding-right: 16px;
+  position: absolute;
+  height: 60px;
+  top: 0; left: 0;
+  margin-left: 0px;
+  margin-top: -12px;
 }
 
 .container-list-wrapper {
