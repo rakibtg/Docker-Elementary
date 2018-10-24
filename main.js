@@ -5,10 +5,10 @@ let win
 
 function createWindow () {
   win = new BrowserWindow({ 
-    width: 900, 
+    width: 1000, 
     height: 700, 
     minHeight: 400, 
-    minWidth: 750 
+    minWidth: 800 
   })
   // win.loadFile('index.html')
   win.loadURL('http://localhost:3000/')
