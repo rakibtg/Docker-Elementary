@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Text, Pane, Heading, Checkbox, Spinner,
+import { Button, Text, Pane, Heading, Checkbox, Spinner, Icon,
   Badge, Switch, SegmentedControl, Pill, Strong } from 'evergreen-ui'
 import Logo from './logo.svg'
 
@@ -16,21 +16,23 @@ class App extends Component {
   state = {
     containers: {},
     options: [
-      { label: 'Containers', value: 'hourly' },
-      { label: 'Images', value: 'daily' }
+      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="layers" marginRight={5}/> Container <Badge color="neutral" marginLeft={5}>29</Badge></Text>, value: 'container' },
+      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="projects" marginRight={5}/> Image <Badge color="neutral" marginLeft={5}>8</Badge></Text>, value: 'image' },
+      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="database" marginRight={5}/> Volume <Badge color="neutral" marginLeft={5}>9</Badge></Text>, value: 'volume' },
+      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="cell-tower" marginRight={5}/> Network <Badge color="neutral" marginLeft={5}>4</Badge></Text>, value: 'network' },
     ],
-    value: 'hourly',
-    filterContainers: [
-      { label: 'All', value: 'all' },
-      { label: 'Active', value: 'active' },
-      { label: 'Stopped', value: 'stopped' }
-    ],
+    value: 'container',
     currentFilterForContainer: 'active',
     mouseHoveredOn: -1,
     switches: [],
     refreshBtnLoading: false,
     activeFilter: 'active',
     activeScreen: 'container',
+    loadingFilter: ''
+  }
+
+  renderContainersLabel() {
+    return <Text>Containers <Pill paddingLeft={10} paddingRight={10} color="green" marginRight={8}>28</Pill></Text>
   }
 
   componentDidMount() {
@@ -38,13 +40,7 @@ class App extends Component {
   }
 
   containerFetcher(filter = 'active') {
-    console.log('inside container fetch')
-    const filters = [
-      { label: filter === 'all' ? <Spinner size={16} /> : 'All', value: 'all' },
-      { label: filter === 'active' ? <Spinner size={16} /> : 'Active', value: 'active' },
-      { label: filter === 'stopped' ? <Spinner size={16} /> : 'Stopped', value: 'stopped' }
-    ]
-    this.setState({ filterContainers: filters, activeFilter: filter })
+    this.setState({ activeFilter: filter })
     ipcRenderer.send('asynchronous-message', JSON.stringify({
       type: 'fetch-containers',
       options: {
@@ -66,7 +62,9 @@ class App extends Component {
       if(data.eventType === 'initial-data') {
         this.setState({
           containers: data.containers,
-          refreshBtnLoading: false
+          refreshBtnLoading: false,
+          loadingFilter: '',
+          mouseHoveredOn: -1
         })
         console.log('Containers: ', data)
       }
@@ -90,8 +88,8 @@ class App extends Component {
   render() {
 
     const {
-      containers, mouseHoveredOn, filterContainers, 
-      currentFilterForContainer
+      containers, mouseHoveredOn, loadingFilter,
+      currentFilterForContainer, activeFilter
     } = this.state
 
     console.log('Fire:', Object.keys(containers).length)
@@ -103,44 +101,48 @@ class App extends Component {
               <Heading size={600}>
                 <div className="logo-wrapper">
                   <img src={Logo}/>
-                  <Strong size={500}>Docker Elementary</Strong>
+                  {/* <Strong size={500}>Docker Elementary</Strong> */}
                 </div>
               </Heading>
             </Pane>
             <Pane flex={1} display="flex" alignItems="center" justifyContent="center">
               <SegmentedControl
-                width={300}
-                height={28}
+                width={550}
+                height={45}
                 options={this.state.options}
                 value={this.state.value}
                 onChange={value => this.setState({ value })}
               />
             </Pane>
             <Pane display='flex' alignItems='center'>
-            {/*iconBefore={this.state.refreshBtnLoading ? null : "refresh"}*/}
               <Button 
-                iconBefore={null} height={24} marginRight={16} appearance="primary" intent="success"
+                iconBefore={this.state.refreshBtnLoading ? null : "refresh"} 
+                height={24} appearance="primary" intent="success"
                 isLoading={this.state.refreshBtnLoading}
                 onClick={() => {
                   this.setState({
                     refreshBtnLoading: true
                   })
-                  this.containerFetcher(this.state.activeFilter)
+                  this.containerFetcher(activeFilter)
                 }}
-                width={95}>
-                <img width="13px" height="13px" style={{marginRight: 10}} src='http://www.dariusland.com/images/load.gif'/> Refresh
+                width={86}>
+                Refresh
               </Button>
-              <Button iconBefore="git-pull" height={24}>GitHub</Button>
+              {/* <Button iconBefore="git-pull" height={24}>GitHub</Button> */}
             </Pane>
           </Pane>
           <Pane display='flex' alignItems='center' justifyContent='center' padding={5} background='tint1'>
             <SegmentedControl
               width={400}
               height={24}
-              options={filterContainers}
+              options={[
+                { label: loadingFilter === 'all' ? <Spinner size={16} /> : 'All', value: 'all' },
+                { label: loadingFilter === 'active' ? <Spinner size={16} /> : 'Active', value: 'active' },
+                { label: loadingFilter === 'stopped' ? <Spinner size={16} /> : 'Stopped', value: 'stopped' }
+              ]}
               value={currentFilterForContainer}
               onChange={value => {
-                this.setState({ currentFilterForContainer: value })
+                this.setState({ currentFilterForContainer: value, loadingFilter: value })
                 this.containerFetcher(value)
               }}
             />
