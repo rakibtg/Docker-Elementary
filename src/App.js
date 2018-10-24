@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Text, Pane, Heading, Checkbox,
+import { Button, Text, Pane, Heading, Checkbox, Spinner,
   Badge, Switch, SegmentedControl, Pill, Strong } from 'evergreen-ui'
 import Logo from './logo.svg'
 
@@ -23,8 +23,7 @@ class App extends Component {
     filterContainers: [
       { label: 'All', value: 'all' },
       { label: 'Active', value: 'active' },
-      { label: 'Stopped', value: 'stopped' },
-      { label: 'Other', value: 'other' },
+      { label: <Spinner size={16} />, value: 'stopped' },
     ],
     currentFilterForContainer: 'active',
     mouseHoveredOn: -1,
@@ -109,7 +108,10 @@ class App extends Component {
               height={24}
               options={filterContainers}
               value={currentFilterForContainer}
-              onChange={value => this.setState({ currentFilterForContainer: value })}
+              onChange={value => {
+                this.setState({ currentFilterForContainer: value })
+                this.containerFetcher(value)
+              }}
             />
           </Pane>
         </div>
