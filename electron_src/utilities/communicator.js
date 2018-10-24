@@ -5,13 +5,17 @@ module.exports = communicator = async () => {
 
   ipcMain.on('asynchronous-message', async (event, arg) => {
 
-    if(arg === 'initial-data') {
-      var results = await fetchContainers()
+    const payloads = JSON.parse(arg)
+
+    console.log('Payloads: ', payloads)
+
+    if(payloads.type === 'fetch-containers') {
       event.sender.send(
         'electron-to-react', 
-        JSON.stringify(results)
+        JSON.stringify(await fetchContainers(payloads.options.filter))
       )
     }
+
   })
 
 }
