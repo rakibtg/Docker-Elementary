@@ -14,8 +14,11 @@ module.exports = fetchContainers = (status) => new Promise( async (resolve, reje
     // Filter containers.
     if(status === 'active') {
       if(tintContainer.State.Running === true) results[container] = tintContainer
-    } else if(status === '')
-    // results[container] = tintContainer
+    } else if(status === 'all') {
+      results[container] = tintContainer
+    } else if(status === 'stopped') {
+      if(tintContainer.State.Running !== true) results[container] = tintContainer
+    }
   }))
   resolve({
     containers: results,
