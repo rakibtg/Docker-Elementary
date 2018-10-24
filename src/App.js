@@ -23,7 +23,7 @@ class App extends Component {
     filterContainers: [
       { label: 'All', value: 'all' },
       { label: 'Active', value: 'active' },
-      { label: <Spinner size={16} />, value: 'stopped' },
+      { label: 'Stopped', value: 'stopped' }
     ],
     currentFilterForContainer: 'active',
     mouseHoveredOn: -1,
@@ -35,6 +35,13 @@ class App extends Component {
   }
 
   containerFetcher(filter = 'active') {
+    console.log('inside container fetch')
+    const filters = [
+      { label: filter === 'all' ? <Spinner size={16} /> : 'All', value: 'all' },
+      { label: filter === 'active' ? <Spinner size={16} /> : 'Active', value: 'active' },
+      { label: filter === 'stopped' ? <Spinner size={16} /> : 'Stopped', value: 'stopped' }
+    ]
+    this.setState({ filterContainers: filters })
     ipcRenderer.send('asynchronous-message', JSON.stringify({
       type: 'fetch-containers',
       options: {
@@ -46,12 +53,20 @@ class App extends Component {
 
   handleElectronRequests(event, arg) {
     const data = JSON.parse(arg)
-    if(data.eventType === 'initial-data') {
-      this.setState({
-        containers: data.containers
-      })
-      console.log('Containers: ', data)
-    }
+    this.setState({
+      filterContainers: [
+        { label: 'All', value: 'all' },
+        { label: 'Active', value: 'active' },
+        { label: 'Stopped', value: 'stopped' }
+      ]
+    }, () => {
+      if(data.eventType === 'initial-data') {
+        this.setState({
+          containers: data.containers
+        })
+        console.log('Containers: ', data)
+      }
+    })
   }
 
   renderHeadingStatus(state) {

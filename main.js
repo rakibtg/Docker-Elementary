@@ -11,7 +11,7 @@ function createWindow () {
     minWidth: 750 
   })
   // win.loadFile('index.html')
-  win.loadURL('http://localhost:3000/')
+  win.loadURL('http://localhost:3001/')
   win.on('closed', () => {
     win = null
   })
