@@ -28,6 +28,9 @@ class App extends Component {
     currentFilterForContainer: 'active',
     mouseHoveredOn: -1,
     switches: [],
+    refreshBtnLoading: false,
+    activeFilter: 'active',
+    activeScreen: 'container',
   }
 
   componentDidMount() {
@@ -41,7 +44,7 @@ class App extends Component {
       { label: filter === 'active' ? <Spinner size={16} /> : 'Active', value: 'active' },
       { label: filter === 'stopped' ? <Spinner size={16} /> : 'Stopped', value: 'stopped' }
     ]
-    this.setState({ filterContainers: filters })
+    this.setState({ filterContainers: filters, activeFilter: filter })
     ipcRenderer.send('asynchronous-message', JSON.stringify({
       type: 'fetch-containers',
       options: {
@@ -62,7 +65,8 @@ class App extends Component {
     }, () => {
       if(data.eventType === 'initial-data') {
         this.setState({
-          containers: data.containers
+          containers: data.containers,
+          refreshBtnLoading: false
         })
         console.log('Containers: ', data)
       }
@@ -113,7 +117,19 @@ class App extends Component {
               />
             </Pane>
             <Pane display='flex' alignItems='center'>
-              <Button iconBefore="refresh" height={24} marginRight={16} appearance="primary" intent="success">Refresh</Button>
+            {/*iconBefore={this.state.refreshBtnLoading ? null : "refresh"}*/}
+              <Button 
+                iconBefore={null} height={24} marginRight={16} appearance="primary" intent="success"
+                isLoading={this.state.refreshBtnLoading}
+                onClick={() => {
+                  this.setState({
+                    refreshBtnLoading: true
+                  })
+                  this.containerFetcher(this.state.activeFilter)
+                }}
+                width={95}>
+                <img width="13px" height="13px" style={{marginRight: 10}} src='http://www.dariusland.com/images/load.gif'/> Refresh
+              </Button>
               <Button iconBefore="git-pull" height={24}>GitHub</Button>
             </Pane>
           </Pane>
