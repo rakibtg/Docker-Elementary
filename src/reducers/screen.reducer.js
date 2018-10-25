@@ -1,6 +1,6 @@
-export default( state = [], action ) => {
+export default ( state = [], action ) => {
+  console.log('Action Type: ', action)
   switch(action.type) {
-
     case 'GET_ACTIVE_SCREEN':
       return state.activeScreen
 
