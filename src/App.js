@@ -7,7 +7,13 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {setScreen} from './actions/screen'
 
-// import Logo from './logo.svg'
+import ContainerScreen from './screens/ContainerScreen'
+import ImageScreen from './screens/ImageScreen'
+import VolumeScreen from './screens/VolumeScreen'
+import NetworkScreen from './screens/NetworkScreen'
+import CleanUpScreen from './screens/CleanUpScreen'
+
+import GlobalTopHeader from './components/AppHeader'
 
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
@@ -92,6 +98,24 @@ class App extends Component {
     })
   }
 
+  renderActiveScreen() {
+    const { screen } = this.props
+    switch (screen) {
+      case 'container':
+        return <ContainerScreen/>
+      case 'image':
+        return <ImageScreen/>
+      case 'volume':
+        return <VolumeScreen/>
+      case 'network':
+        return <NetworkScreen/>
+      case 'cleanup':
+        return <CleanUpScreen/>
+      default:
+        return <div>Welcome to Docker Elementary!</div>
+    }
+  }
+
   render() {
 
     const {
@@ -102,68 +126,19 @@ class App extends Component {
     console.log('Fire:', Object.keys(containers).length)
     return (
       <div className='app'>
-        <div className='app-header'>
-          <Pane display="flex" padding={16} background="tint2">
-            <Pane display="flex">
-              {/* <Heading size={600}>
-                <div className="logo-wrapper">
-                  <img src={Logo}/>
-                  <Strong size={500}>Docker Elementary</Strong>
-                </div>
-              </Heading> */}
-            </Pane>
-            <Pane flex={1} display="flex" alignItems="center" justifyContent="center">
-              <SegmentedControl
-                width={750}
-                height={50}
-                options={this.state.options}
-                value={this.state.value}
-                onChange={value => this.setState({ value })}
-              />
-            </Pane>
-            {/* <Pane display='flex' alignItems='center'>
-              <Button 
-                iconBefore={this.state.refreshBtnLoading ? null : "refresh"} 
-                height={24} appearance="primary" intent="success"
-                isLoading={this.state.refreshBtnLoading}
-                onClick={() => {
-                  this.setState({
-                    refreshBtnLoading: true
-                  })
-                  this.containerFetcher(activeFilter)
-                }}
-                width={86}>
-                Refresh
-              </Button>
-              <Button iconBefore="git-pull" height={24}>GitHub</Button>
-            </Pane> */}
-          </Pane>
-          <Pane display='flex' alignItems='center' justifyContent='center' padding={5} background='tint1'>
-            <SegmentedControl
-              width={400}
-              height={24}
-              options={[
-                { label: loadingFilter === 'all' ? <Spinner size={16} /> : 'All', value: 'all' },
-                { label: loadingFilter === 'active' ? <Spinner size={16} /> : 'Active', value: 'active' },
-                { label: loadingFilter === 'stopped' ? <Spinner size={16} /> : 'Stopped', value: 'stopped' }
-              ]}
-              value={currentFilterForContainer}
-              onChange={value => {
-                this.setState({ currentFilterForContainer: value, loadingFilter: value })
-                this.containerFetcher(value)
-              }}
-            />
-          </Pane>
-        </div>
-        <Pane display='flex' justifyContent='center' alignItems='center' paddingTop={10}>
+
+        {/* <Pane display='flex' justifyContent='center' alignItems='center' paddingTop={10}>
           <Text paddingRight={10}>{this.props.screen}</Text> 
           <Button onClick={() => {
             this.props.setScreen('Redux 🎉')
           }}>🦄</Button>
-        </Pane>
+        </Pane> */}
+
+        <GlobalTopHeader/>
         <div className='app-body'>
           <div className='app-container'>
-            {
+            {this.renderActiveScreen()}
+            {/* {
               Object.keys(containers).map((containerShortId, index) => {
                 const container = containers[containerShortId]
                 const isHovered = index === mouseHoveredOn
@@ -184,7 +159,7 @@ class App extends Component {
                   }
                 </div>
               })
-            }
+            } */}
           </div>
         </div>
       </div>
