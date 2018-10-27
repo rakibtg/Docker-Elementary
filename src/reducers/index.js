@@ -1,9 +1,5 @@
 import {combineReducers} from 'redux'
-
-import screens from './screen.reducer'
-
-const rootReducer = combineReducers({
-  screens,
+import screen from './screen'
+export default combineReducers({
+  screen
 })
-
-export default rootReducer
