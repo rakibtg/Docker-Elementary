@@ -1,3 +1,3 @@
 export default {
-  screen: 'welcome'
+  screen: 'container'
 }
