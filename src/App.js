@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Text, Pane, Heading, Checkbox, Spinner, Icon,
+import { Button, Text, Pane, Spinner, Icon,
   Badge, Switch, SegmentedControl, Pill, Strong } from 'evergreen-ui'
-import Logo from './logo.svg'
+
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
+import {setScreen} from './actions/screen'
+
+// import Logo from './logo.svg'
 
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
+
 
 const { ipcRenderer } = window.require("electron")
 
@@ -20,6 +26,7 @@ class App extends Component {
       { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="projects" marginRight={5}/> Image <Badge color="neutral" marginLeft={5}>8</Badge></Text>, value: 'image' },
       { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="database" marginRight={5}/> Volume <Badge color="neutral" marginLeft={5}>9</Badge></Text>, value: 'volume' },
       { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="cell-tower" marginRight={5}/> Network <Badge color="neutral" marginLeft={5}>4</Badge></Text>, value: 'network' },
+      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="shield" marginRight={5}/> Clean-up</Text>, value: 'cleanup' },
     ],
     value: 'container',
     currentFilterForContainer: 'active',
@@ -98,23 +105,23 @@ class App extends Component {
         <div className='app-header'>
           <Pane display="flex" padding={16} background="tint2">
             <Pane display="flex">
-              <Heading size={600}>
+              {/* <Heading size={600}>
                 <div className="logo-wrapper">
                   <img src={Logo}/>
-                  {/* <Strong size={500}>Docker Elementary</Strong> */}
+                  <Strong size={500}>Docker Elementary</Strong>
                 </div>
-              </Heading>
+              </Heading> */}
             </Pane>
             <Pane flex={1} display="flex" alignItems="center" justifyContent="center">
               <SegmentedControl
-                width={550}
-                height={45}
+                width={750}
+                height={50}
                 options={this.state.options}
                 value={this.state.value}
                 onChange={value => this.setState({ value })}
               />
             </Pane>
-            <Pane display='flex' alignItems='center'>
+            {/* <Pane display='flex' alignItems='center'>
               <Button 
                 iconBefore={this.state.refreshBtnLoading ? null : "refresh"} 
                 height={24} appearance="primary" intent="success"
@@ -128,8 +135,8 @@ class App extends Component {
                 width={86}>
                 Refresh
               </Button>
-              {/* <Button iconBefore="git-pull" height={24}>GitHub</Button> */}
-            </Pane>
+              <Button iconBefore="git-pull" height={24}>GitHub</Button>
+            </Pane> */}
           </Pane>
           <Pane display='flex' alignItems='center' justifyContent='center' padding={5} background='tint1'>
             <SegmentedControl
@@ -148,6 +155,12 @@ class App extends Component {
             />
           </Pane>
         </div>
+        <Pane display='flex' justifyContent='center' alignItems='center' paddingTop={10}>
+          <Text paddingRight={10}>{this.props.screen}</Text> 
+          <Button onClick={() => {
+            this.props.setScreen('Redux 🎉')
+          }}>🦄</Button>
+        </Pane>
         <div className='app-body'>
           <div className='app-container'>
             {
@@ -179,4 +192,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  screen: state.screen
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators( {setScreen}, dispatch )
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
