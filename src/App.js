@@ -27,14 +27,6 @@ class App extends Component {
 
   state = {
     containers: {},
-    options: [
-      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="layers" marginRight={5}/> Container <Badge color="neutral" marginLeft={5}>29</Badge></Text>, value: 'container' },
-      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="projects" marginRight={5}/> Image <Badge color="neutral" marginLeft={5}>8</Badge></Text>, value: 'image' },
-      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="database" marginRight={5}/> Volume <Badge color="neutral" marginLeft={5}>9</Badge></Text>, value: 'volume' },
-      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="cell-tower" marginRight={5}/> Network <Badge color="neutral" marginLeft={5}>4</Badge></Text>, value: 'network' },
-      { label: <Text display='flex' alignItems='center'><Icon size={14} color="muted" icon="shield" marginRight={5}/> Clean-up</Text>, value: 'cleanup' },
-    ],
-    value: 'container',
     currentFilterForContainer: 'active',
     mouseHoveredOn: -1,
     switches: [],
@@ -126,14 +118,6 @@ class App extends Component {
     console.log('Fire:', Object.keys(containers).length)
     return (
       <div className='app'>
-
-        {/* <Pane display='flex' justifyContent='center' alignItems='center' paddingTop={10}>
-          <Text paddingRight={10}>{this.props.screen}</Text> 
-          <Button onClick={() => {
-            this.props.setScreen('Redux 🎉')
-          }}>🦄</Button>
-        </Pane> */}
-
         <GlobalTopHeader/>
         <div className='app-body'>
           <div className='app-container'>
