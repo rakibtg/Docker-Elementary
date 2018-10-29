@@ -6,7 +6,7 @@ class ContainerScreen extends Component {
 
   componentDidMount() {
     console.log('Inside Containers')
-    fetcher(getContainers('active-containers'))
+    fetcher(getContainers)
   }
 
   render() {

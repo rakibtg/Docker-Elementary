@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
 import initStore from './store'
-import {Provider} from 'react-redux'
+import { Provider } from 'react-redux'
 
-const store = initStore()
+export const store = initStore()
 
 ReactDOM.render(
   <Provider store={store}>
