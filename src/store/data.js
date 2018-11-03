@@ -1,3 +1,4 @@
 export default {
-  screen: 'container'
+  screen: 'container',
+  container: {}
 }
