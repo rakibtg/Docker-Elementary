@@ -12,5 +12,7 @@ export default (state = {}, action) => {
       return Object.assign(
         {}, state, {error: action.payload}
       )
+    default:
+      return state
   }
 }
