@@ -1,26 +1,21 @@
 import {store} from '../index'
-const {ipcRenderer} = window.require('electron')
+import reactToElectron from './reactToElectron'
 
-// const recipes = {
-//   'active-containers': () => {
-//     ipcRenderer.send('asynchronous-message', JSON.stringify({
-//       type: 'fetch-containers',
-//       options: {
-//         filter,
-//       }
-//     }))
-//     ipcRenderer.on('electron-to-react', this.handleElectronRequests.bind(this))
-//   }
-// }
+import {setContainers, setLoadingContainer} from '../actions/container'
 
-export default async (source, action) => {
-  setTimeout(async () => {
-    const data = await source()
-  }, 5000);
-  console.log('Data from fetcher', data)
-  // Collect all data to be set in a store.
-  // Dispatch collected data in the store VIA action.
-  // store.dispatch(dataAction(payloads))
-  // if(loadingAction) store.dispatch(loadingAction())
-  // if(errorAction) store.dispatch(errorAction)
+const recipes = {
+  getContainers: async options => {
+    const filter = options.filter ? options.filter : 'active'
+    // Dispatch loading...
+    store.dispatch(setLoadingContainer(filter))
+    try{
+      const containers = await reactToElectron('fetch-containers', { filter })
+      store.dispatch(setContainers(containers))
+      store.dispatch(setLoadingContainer(''))
+    } catch (e) {
+      // Dispatch error.
+    }
+  }
 }
+
+export default async (recipe, options = {}) => recipes[ recipe ](options)
