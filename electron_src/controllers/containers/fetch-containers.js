@@ -20,8 +20,5 @@ module.exports = fetchContainers = (status) => new Promise( async (resolve, reje
       if(tintContainer.State.Running !== true) results[container] = tintContainer
     }
   }))
-  resolve({
-    containers: results,
-    eventType:'initial-data'
-  })
+  resolve(results)
 })
