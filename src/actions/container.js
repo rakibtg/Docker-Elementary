@@ -1,4 +1,4 @@
-export const getContainers = payload => ({
+export const setContainers = payload => ({
   type: 'SET_CONTAINERS',
   payload,
 })
