@@ -1,4 +1,7 @@
 export default {
   screen: 'container',
-  container: {}
+  container: {
+    loading: '',
+    containers: {}
+  }
 }
