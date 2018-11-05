@@ -1,0 +1,15 @@
+div.container-id-pill {
+  background-color: rgb(231, 233, 238);
+  padding: 0px 16px;
+  font-size: 14px;
+  border-radius: 10px;
+  margin-right: 16px;
+  color: rgb(97, 97, 109);
+  cursor: pointer;
+  height: 16px;
+  line-height: 15px;
+}
+
+div.container-id-pill:hover {
+  background-color: rgb(215, 217, 223);
+}
