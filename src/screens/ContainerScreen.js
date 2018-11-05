@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import fetcher from '../utils/fetcher'
 import { connect } from 'react-redux'
-import { Switch, Strong, Pill, Button } from 'evergreen-ui'
+import { Switch, Strong, Pill, Button, Pane, 
+  Popover, Menu, toaster, Position, IconButton } from 'evergreen-ui'
+import './css/ContainerScreen.css'
+
+import ContainerIdPill from '../components/ContainerIdPill'
 
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
+
 
 class ContainerScreen extends Component {
 
@@ -25,11 +30,111 @@ class ContainerScreen extends Component {
   }
 
   renderHeadingStatus(state) {
-    if(state.Status === 'running') return <Pill paddingLeft={10} paddingRight={10} color="green" marginRight={8}>
-      {timeAgo.format(new Date(state.StartedAt))}
+    if(state.Status === 'running') return <Pill 
+      paddingLeft={10} 
+      paddingRight={10} 
+      color="green" 
+      marginRight={8}
+      title={timeAgo.format(new Date(state.StartedAt))}>
+      {timeAgo.format(new Date(state.StartedAt), 'twitter')}
     </Pill>
-    else if(state.Status === 'restarting') return <Pill paddingLeft={10} paddingRight={10} color="yellow" marginRight={8}>RE-STARTING</Pill>
-    else return <Pill paddingLeft={10} paddingRight={10} color="neutral" marginRight={8}>{state.Status}</Pill>
+    else if(state.Status === 'restarting') return <Pill 
+      paddingLeft={10} 
+      paddingRight={10} 
+      color="yellow" 
+      marginRight={8}
+      title={timeAgo.format(new Date(state.StartedAt))}>RE-STARTING
+    </Pill>
+    else return <Pill 
+      paddingLeft={10} 
+      paddingRight={10} 
+      color="neutral" 
+      marginRight={8}
+      title={timeAgo.format(new Date(state.StartedAt))}>{state.Status}
+    </Pill>
+  }
+
+  renderContainerFooter() {
+    return <Pane 
+      display='flex'
+      marginTop={12}>
+      <Button height={20} marginRight={5} iconBefore="refresh">
+        Restart
+      </Button>
+      <Button height={20} marginRight={5} iconBefore="stop">
+        Stop
+      </Button>
+      {/* <Button height={20} marginRight={5} iconBefore='pause'>
+        Pause
+      </Button>
+      <Button height={20} marginRight={5} iconBefore='ban-circle'>
+        Kill
+      </Button> */}
+      {/* <Button height={20} marginRight={5} iconBefore='edit'>
+        Rename
+      </Button> */}
+      {/* <Button height={20} marginRight={5} iconBefore='cell-tower'>
+        Port
+      </Button> */}
+      <Button height={20} marginRight={5} iconBefore="clipboard">
+        Logs
+      </Button>
+      {/* <Button height={20} marginRight={5} iconBefore="play">
+        Start
+      </Button> */}
+      <Button 
+        height={20} 
+        iconBefore="trash"
+        onClick={() => {
+          alert('Are your sure you want to remove this container?')
+        }}>
+        Remove
+      </Button>
+      <Popover
+        position={Position.BOTTOM_LEFT}
+        content={
+          <Menu>
+            <Menu.Group>
+              <Menu.Item
+                onSelect={() => toaster.notify('Share')}
+                icon='pause'
+                height={28}
+              >
+                Pause all processes
+              </Menu.Item>
+              <Menu.Item
+                onSelect={() => toaster.notify('Move')}
+                icon='ban-circle'
+                height={28}
+              >
+                Kill
+              </Menu.Item>
+              <Menu.Item
+                onSelect={() => toaster.notify('Rename')}
+                icon='edit'
+                height={28}
+              >
+                Rename
+              </Menu.Item>
+              <Menu.Item
+                onSelect={() => toaster.notify('Rename')}
+                icon='cell-tower'
+                height={28}
+              >
+                Port
+              </Menu.Item>
+            </Menu.Group>
+          </Menu>
+        }
+      >
+        <IconButton 
+          height={20} 
+          icon='cog'
+          width={40}
+          marginLeft={5}
+        />
+      </Popover>
+    </Pane>
   }
 
   render() {
@@ -41,18 +146,32 @@ class ContainerScreen extends Component {
       const wrapperClass = isHovered ? 'container-list-wrapper active-list' : 'container-list-wrapper inactive-list'
       return <div key={index} className={wrapperClass}>
         <div className='container-list-left'>
-          <Switch marginLeft={16} height={22} checked={container.State.Running} />
+          <Switch 
+            marginLeft={16} 
+            height={22} 
+            checked={container.State.Running} 
+          />
         </div>
         <div className='container-list-body' onMouseEnter={() => this.handleMouseHover(index)}>
-          <Strong marginRight={16}>{container.Name.replace('/', '')}</Strong> 
-          <Pill paddingLeft={10} paddingRight={10} color="neutral" marginRight={16}>{container.shortId}</Pill> 
-          {this.renderHeadingStatus(container.State)}
+          <div className='container-list-inline'>
+            <Strong marginRight={16}>{container.Name.replace('/', '')}</Strong>
+            {ContainerIdPill(container.shortId)}
+            {this.renderHeadingStatus(container.State)}
+          </div>
+          {
+            isHovered && <div className='container-list-action-btn-wrapper'>
+              {this.renderContainerFooter()}
+            </div>
+          }
+          {/* <div className='container-list-footer'>
+            From footer content
+          </div> */}
         </div>
-        {
+        {/* {
           isHovered && <div className='container-list-right'>
             <Button marginRight={16} height={22} appearance='primary' intent='none'>View</Button>
           </div>
-        }
+        } */}
       </div>
     })
   }

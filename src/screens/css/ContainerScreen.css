@@ -1,0 +1,15 @@
+div.container-list-wrapper 
+div.container-list-body {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+div.container-list-wrapper 
+div.container-list-inline {
+  /* border: 1px solid green; */
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+}
