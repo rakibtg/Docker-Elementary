@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "copy-to-clipboard": "^3.0.8",
     "electron": "^3.0.5",
     "evergreen-ui": "^4.0.2",
     "javascript-time-ago": "^1.0.31",
