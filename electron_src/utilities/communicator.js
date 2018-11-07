@@ -1,21 +1,18 @@
 const { ipcMain } = require('electron')
 const fetchContainers = require('../controllers/containers/fetch-containers')
+const fetchContainerStats = require('../controllers/containers/fetch-stats')
 
 module.exports = communicator = async () => {
 
-  ipcMain.on('asynchronous-message', async (event, arg) => {
-
+  ipcMain.on('fetch-containers-message', async (event, arg) => {
     const payloads = JSON.parse(arg)
+    const containers = await fetchContainers(payloads.options.filter)
+    event.sender.send('fetch-containers', JSON.stringify(containers))
+  })
 
-    console.log('Payloads: ', payloads)
-
-    if(payloads.type === 'fetch-containers') {
-      event.sender.send(
-        'electron-to-react', 
-        JSON.stringify(await fetchContainers(payloads.options.filter))
-      )
-    }
-
+  ipcMain.on('fetch-container-stats-message', async (event, arg) => {
+    const stats = await fetchContainerStats()
+    event.sender.send('fetch-container-stats', JSON.stringify(stats))
   })
 
 }
