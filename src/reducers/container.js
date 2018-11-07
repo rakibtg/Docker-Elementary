@@ -12,6 +12,10 @@ export default (state = {}, action) => {
       return Object.assign(
         {}, state, {error: action.payload}
       )
+    case 'SET_CONTAINER_STATS':
+      return Object.assign(
+        {}, state, {stats: action.payload}
+      )
     default:
       return state
   }
