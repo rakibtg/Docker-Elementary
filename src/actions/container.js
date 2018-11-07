@@ -12,3 +12,8 @@ export const setErrorLoadingContainer = payload => ({
   type: 'SET_ERROR_LOADING_CONTAINER',
   payload
 })
+
+export const setContainerStats = payload => ({
+  type: 'SET_CONTAINER_STATS',
+  payload
+})
