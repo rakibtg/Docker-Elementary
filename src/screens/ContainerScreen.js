@@ -7,6 +7,7 @@ import { Switch, Strong, Pill, Button, Pane,
 import ContainerIdPill from '../components/ContainerIdPill'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import ContainerLiveStats from '../components/ContainerLiveStats/ContainerLiveStats'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -20,7 +21,7 @@ class ContainerScreen extends Component {
   async componentDidMount() {
     fetcher('getContainers', {filter: 'active'})
     fetcher('getContainerStats')
-    console.log('this.props.stats', this.props)
+    setInterval(() => fetcher('getContainerStats'), 5000)
   }
 
   handleMouseHover(index) {
@@ -84,6 +85,12 @@ class ContainerScreen extends Component {
       </Button> */}
       <Button 
         height={20} 
+        iconBefore="info-sign"
+        marginRight={5}>
+        Info
+      </Button>
+      <Button 
+        height={20} 
         iconBefore="trash"
         onClick={() => {
           alert('Are your sure you want to remove this container?')
@@ -98,28 +105,36 @@ class ContainerScreen extends Component {
               <Menu.Item
                 onSelect={() => toaster.notify('Share')}
                 icon='pause'
-                height={28}
+                height={20}
+                paddingTop={14}
+                paddingBottom={14}
               >
                 Pause all processes
               </Menu.Item>
               <Menu.Item
                 onSelect={() => toaster.notify('Move')}
                 icon='ban-circle'
-                height={28}
+                height={20}
+                paddingTop={14}
+                paddingBottom={14}
               >
                 Kill
               </Menu.Item>
               <Menu.Item
                 onSelect={() => toaster.notify('Rename')}
                 icon='edit'
-                height={28}
+                height={20}
+                paddingTop={14}
+                paddingBottom={14}
               >
                 Rename
               </Menu.Item>
               <Menu.Item
                 onSelect={() => toaster.notify('Rename')}
                 icon='cell-tower'
-                height={28}
+                height={20}
+                paddingTop={14}
+                paddingBottom={14}
               >
                 Port
               </Menu.Item>
@@ -157,6 +172,7 @@ class ContainerScreen extends Component {
             <Strong marginRight={16}>{container.Name.replace('/', '')}</Strong>
             {ContainerIdPill(container.shortId)}
             {this.renderHeadingStatus(container.State)}
+            <ContainerLiveStats container={container.shortId}/>
           </div>
           {
             isHovered && <div className='container-list-action-btn-wrapper'>
@@ -178,6 +194,6 @@ class ContainerScreen extends Component {
 }
 const mapStateToProps = state => ({
   container: state.container,
-  stats: state.stats
+  stats: state.container.stats
 })
 export default connect(mapStateToProps, null)(ContainerScreen)
