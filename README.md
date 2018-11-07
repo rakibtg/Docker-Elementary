@@ -1,7 +1,7 @@
 # Docker Elementary
 
 <p align="center">
-  <img src="./assets/app4.png" alt="Docker Elementary - A simple GUI interface for Docker" title="Docker Elementary - A simple GUI interface for Docker">
+  <img src="./assets/app5.png" alt="Docker Elementary - A simple GUI interface for Docker" title="Docker Elementary - A simple GUI interface for Docker">
 </p>
 
 A simple GUI for managing containers and images of Docker
