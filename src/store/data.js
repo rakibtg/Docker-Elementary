@@ -2,6 +2,7 @@ export default {
   screen: 'container',
   container: {
     loading: '',
-    containers: {}
+    containers: {},
+    stats: []
   }
 }
