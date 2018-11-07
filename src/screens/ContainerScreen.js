@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
+import './css/ContainerScreen.css'
 import fetcher from '../utils/fetcher'
 import { connect } from 'react-redux'
 import { Switch, Strong, Pill, Button, Pane, 
   Popover, Menu, toaster, Position, IconButton } from 'evergreen-ui'
-import './css/ContainerScreen.css'
-
 import ContainerIdPill from '../components/ContainerIdPill'
-
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
-
 
 class ContainerScreen extends Component {
 
@@ -21,6 +19,8 @@ class ContainerScreen extends Component {
 
   async componentDidMount() {
     fetcher('getContainers', {filter: 'active'})
+    fetcher('getContainerStats')
+    console.log('this.props.stats', this.props)
   }
 
   handleMouseHover(index) {
@@ -35,15 +35,15 @@ class ContainerScreen extends Component {
       paddingRight={10} 
       color="green" 
       marginRight={8}
-      title={timeAgo.format(new Date(state.StartedAt))}>
+      title={timeAgo.format(new Date(state.StartedAt))}
+      textTransform='lowercase'>
       {timeAgo.format(new Date(state.StartedAt), 'twitter')}
     </Pill>
     else if(state.Status === 'restarting') return <Pill 
       paddingLeft={10} 
       paddingRight={10} 
       color="yellow" 
-      marginRight={8}
-      title={timeAgo.format(new Date(state.StartedAt))}>RE-STARTING
+      marginRight={8}>RE-STARTING
     </Pill>
     else return <Pill 
       paddingLeft={10} 
@@ -177,6 +177,7 @@ class ContainerScreen extends Component {
   }
 }
 const mapStateToProps = state => ({
-  container: state.container
+  container: state.container,
+  stats: state.stats
 })
 export default connect(mapStateToProps, null)(ContainerScreen)
