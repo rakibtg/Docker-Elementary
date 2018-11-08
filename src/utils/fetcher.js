@@ -24,6 +24,9 @@ const recipes = {
     const stats = await reactToElectron('fetch-container-stats')
     store.dispatch(setContainerStats(stats))
     // console.log('Stats:', stats)
+  },
+  containerAction: async (name, containerID) => {
+    
   }
 }
 
