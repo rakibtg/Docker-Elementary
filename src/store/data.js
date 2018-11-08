@@ -3,6 +3,7 @@ export default {
   container: {
     loading: '',
     containers: {},
-    stats: []
+    stats: [],
+    inProgress: -1
   }
 }
