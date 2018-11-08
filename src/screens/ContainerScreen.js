@@ -8,6 +8,8 @@ import ContainerIdPill from '../components/ContainerIdPill'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ContainerLiveStats from '../components/ContainerLiveStats/ContainerLiveStats'
+import {bindActionCreators} from 'redux'
+import { setContainerInProgress } from '../actions/container'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -157,6 +159,8 @@ class ContainerScreen extends Component {
     const containers = this.props.container.containers
     return Object.keys(containers).map((containerShortId, index) => {
       const container = containers[containerShortId]
+      // console.log('Container', JSON.stringify(container))
+      // console.log('~~~~~~~~~~~~~~~~~~')
       const isHovered = index === mouseHoveredOn
       const wrapperClass = isHovered ? 'container-list-wrapper active-list' : 'container-list-wrapper inactive-list'
       return <div key={index} className={wrapperClass}>
@@ -165,6 +169,9 @@ class ContainerScreen extends Component {
             marginLeft={16} 
             height={22} 
             checked={container.State.Running} 
+            onChange={() => {
+              this.props.setContainerInProgress(container.shortId)
+            }}
           />
         </div>
         <div className='container-list-body' onMouseEnter={() => this.handleMouseHover(index)}>
@@ -183,17 +190,18 @@ class ContainerScreen extends Component {
             From footer content
           </div> */}
         </div>
-        {/* {
-          isHovered && <div className='container-list-right'>
-            <Button marginRight={16} height={22} appearance='primary' intent='none'>View</Button>
-          </div>
-        } */}
       </div>
     })
   }
 }
 const mapStateToProps = state => ({
   container: state.container,
-  stats: state.container.stats
+  stats: state.container.stats,
+  inProgress: state.container.inProgress
 })
-export default connect(mapStateToProps, null)(ContainerScreen)
+
+const mapDispatchToProps = dispatch => bindActionCreators( {
+  setContainerInProgress
+}, dispatch )
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContainerScreen)
