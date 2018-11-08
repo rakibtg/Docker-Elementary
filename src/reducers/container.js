@@ -16,6 +16,27 @@ export default (state = {}, action) => {
       return Object.assign(
         {}, state, {stats: action.payload}
       )
+    case 'SET_CONTAINER_IN_PROGRESS':
+      return Object.assign(
+        {}, state, {inProgress: action.payload}
+      )
+    case 'SET_CONTAINER_STATE':
+      return Object.assign(
+        {}, 
+        state, 
+        {
+          containers: {
+            ...state.containers,
+            [action.payload.containerID]: {
+              ...state['containers'][action.payload.containerID],
+              State: {
+                ...state['containers'][action.payload.containerID]['State'],
+                ...action.payload.updatable
+              }
+            }
+          }
+        }
+      )
     default:
       return state
   }
