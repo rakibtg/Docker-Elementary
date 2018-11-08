@@ -6,7 +6,8 @@ class ContainerLiveStats extends Component {
 
   getMemoryUsage(memory) {
     [memory] = memory.split('/')
-    return memory.trim()
+    let memoryFormated = memory.replace(/[a-zA-Z]/g, '').trim()
+    return Number(memoryFormated).toFixed(1) + ' mb'
   }
 
   render() {
