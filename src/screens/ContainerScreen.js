@@ -3,13 +3,16 @@ import './css/ContainerScreen.css'
 import fetcher from '../utils/fetcher'
 import { connect } from 'react-redux'
 import { Switch, Strong, Pill, Button, Pane, 
-  Popover, Menu, toaster, Position, IconButton } from 'evergreen-ui'
+  Popover, Menu, toaster, Position, IconButton, Spinner } from 'evergreen-ui'
 import ContainerIdPill from '../components/ContainerIdPill'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ContainerLiveStats from '../components/ContainerLiveStats/ContainerLiveStats'
 import {bindActionCreators} from 'redux'
-import { setContainerInProgress } from '../actions/container'
+import { 
+  setContainerInProgress,
+  setContainerState
+} from '../actions/container'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -67,30 +70,6 @@ class ContainerScreen extends Component {
       <Button height={20} marginRight={5} iconBefore="stop">
         Stop
       </Button>
-      {/* <Button height={20} marginRight={5} iconBefore='pause'>
-        Pause
-      </Button>
-      <Button height={20} marginRight={5} iconBefore='ban-circle'>
-        Kill
-      </Button> */}
-      {/* <Button height={20} marginRight={5} iconBefore='edit'>
-        Rename
-      </Button> */}
-      {/* <Button height={20} marginRight={5} iconBefore='cell-tower'>
-        Port
-      </Button> */}
-      <Button height={20} marginRight={5} iconBefore="clipboard">
-        Logs
-      </Button>
-      {/* <Button height={20} marginRight={5} iconBefore="play">
-        Start
-      </Button> */}
-      <Button 
-        height={20} 
-        iconBefore="info-sign"
-        marginRight={5}>
-        Info
-      </Button>
       <Button 
         height={20} 
         iconBefore="trash"
@@ -104,6 +83,24 @@ class ContainerScreen extends Component {
         content={
           <Menu>
             <Menu.Group>
+              <Menu.Item
+                onSelect={() => toaster.notify('Share')}
+                icon='clipboard'
+                height={20}
+                paddingTop={14}
+                paddingBottom={14}
+              >
+                Logs
+              </Menu.Item>
+              <Menu.Item
+                onSelect={() => toaster.notify('Share')}
+                icon='info-sign'
+                height={20}
+                paddingTop={14}
+                paddingBottom={14}
+              >
+                Info
+              </Menu.Item>
               <Menu.Item
                 onSelect={() => toaster.notify('Share')}
                 icon='pause'
@@ -155,12 +152,17 @@ class ContainerScreen extends Component {
   }
 
   render() {
-    const {mouseHoveredOn} = this.state
+    const { mouseHoveredOn } = this.state
+    const { 
+      setContainerInProgress, 
+      setContainerState,
+      inProgress
+    } = this.props
     const containers = this.props.container.containers
+    // console.log(inProgress)
     return Object.keys(containers).map((containerShortId, index) => {
       const container = containers[containerShortId]
-      // console.log('Container', JSON.stringify(container))
-      // console.log('~~~~~~~~~~~~~~~~~~')
+      // console.log(container)
       const isHovered = index === mouseHoveredOn
       const wrapperClass = isHovered ? 'container-list-wrapper active-list' : 'container-list-wrapper inactive-list'
       return <div key={index} className={wrapperClass}>
@@ -170,12 +172,17 @@ class ContainerScreen extends Component {
             height={22} 
             checked={container.State.Running} 
             onChange={() => {
-              this.props.setContainerInProgress(container.shortId)
+              setContainerInProgress(container.shortId)
+              setContainerState({
+                containerID: container.shortId,
+                updatable: { Running: !container.State.Running }
+              })
             }}
           />
         </div>
         <div className='container-list-body' onMouseEnter={() => this.handleMouseHover(index)}>
           <div className='container-list-inline'>
+            { inProgress == containerShortId && <Spinner size={20} marginRight={10} /> }
             <Strong marginRight={16}>{container.Name.replace('/', '')}</Strong>
             {ContainerIdPill(container.shortId)}
             {this.renderHeadingStatus(container.State)}
@@ -201,7 +208,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators( {
-  setContainerInProgress
+  setContainerInProgress,
+  setContainerState
 }, dispatch )
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContainerScreen)
