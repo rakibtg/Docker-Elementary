@@ -36,6 +36,7 @@ class ContainerScreen extends Component {
   }
 
   renderHeadingStatus(state) {
+    const twitterStyleTime = timeAgo.format(new Date(state.StartedAt), 'twitter')
     if(state.Status === 'running') return <Pill 
       paddingLeft={10} 
       paddingRight={10} 
@@ -43,7 +44,7 @@ class ContainerScreen extends Component {
       marginRight={8}
       title={timeAgo.format(new Date(state.StartedAt))}
       textTransform='lowercase'>
-      {timeAgo.format(new Date(state.StartedAt), 'twitter')}
+      {twitterStyleTime.trim() === '' ? 'now' : twitterStyleTime}
     </Pill>
     else if(state.Status === 'restarting') return <Pill 
       paddingLeft={10} 
@@ -172,7 +173,7 @@ class ContainerScreen extends Component {
             height={22} 
             checked={container.State.Running} 
             onChange={() => {
-              // setContainerInProgress(container.shortId)
+              setContainerInProgress(container.shortId)
               fetcher('containerCmdAction', {containerID: container.shortId, cmdCommand: 'stop'})
               setContainerState({
                 containerID: container.shortId,
