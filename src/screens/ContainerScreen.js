@@ -172,7 +172,8 @@ class ContainerScreen extends Component {
             height={22} 
             checked={container.State.Running} 
             onChange={() => {
-              setContainerInProgress(container.shortId)
+              // setContainerInProgress(container.shortId)
+              fetcher('containerCmdAction', {containerID: container.shortId, cmdCommand: 'stop'})
               setContainerState({
                 containerID: container.shortId,
                 updatable: { Running: !container.State.Running }
