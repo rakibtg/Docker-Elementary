@@ -5,6 +5,7 @@ import {
   setContainers, 
   setContainerStats,
   setLoadingContainer,
+  setContainerInProgress
 } from '../actions/container'
 
 const recipes = {
@@ -25,8 +26,16 @@ const recipes = {
     store.dispatch(setContainerStats(stats))
     // console.log('Stats:', stats)
   },
-  containerAction: async (name, containerID) => {
-    
+  containerCmdAction: async (containerID, cmdCommand) => {
+    store.dispatch(setContainerInProgress(containerID))
+    const status = await reactToElectron(
+      'container-cmd-actions',
+      {
+        containerID,
+        cmdCommand
+      }
+    )
+    store.dispatch(setContainerInProgress(-1))
   }
 }
 
