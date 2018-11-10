@@ -37,6 +37,25 @@ export default (state = {}, action) => {
           }
         }
       )
+    case 'UPDATE_SINGLE_CONTAINER_BY_ID':
+      return Object.assign(
+        {},
+        state,
+        {
+          containers: {
+            ...state.containers,
+            [action.payload.shortId]: action.payload
+          }
+        }
+      )
+    case 'REMOVE_CONTAINER_FROM_STORE_BY_ID':
+      let containers = Object.assign({}, state.containers)
+      delete containers[action.payload] // action.payload is the container id
+      return Object.assign(
+        {},
+        state,
+        { containers }
+      )
     default:
       return state
   }
