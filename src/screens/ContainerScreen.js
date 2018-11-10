@@ -127,9 +127,8 @@ class ContainerScreen extends Component {
                 'containerCmdAction', 
                 {
                   containerID: container.shortId, 
-                  cmdCommand: container.State.Running 
-                    ? 'stop'
-                    : 'start'
+                  cmdCommand: 'stop',
+                  hideErrorDialog: true,
                 }
               )
               fetcher(
@@ -139,16 +138,8 @@ class ContainerScreen extends Component {
                   cmdCommand: 'rm'
                 }
               )
-              setContainerState({
-                containerID: container.shortId,
-                updatable: { 
-                  Running: false,
-                  Restarting: false
-                }
-              })
             }
           })
-          // alert('Are your sure you want to remove this container?')
         }}>
         Remove
       </Button>
