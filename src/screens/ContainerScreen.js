@@ -13,6 +13,7 @@ import {
   setContainerInProgress,
   setContainerState
 } from '../actions/container'
+const { dialog } = window.require('electron').remote
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -61,21 +62,93 @@ class ContainerScreen extends Component {
     </Pill>
   }
 
-  renderContainerFooter() {
+  renderContainerFooter(container) {
+    const [, name] = container.Name.split('/')
     return <Pane 
       display='flex'
       marginTop={12}>
-      <Button height={20} marginRight={5} iconBefore="refresh">
+      <Button 
+        height={20} 
+        marginRight={5} 
+        iconBefore="refresh"
+        onClick={() => {
+          fetcher(
+            'containerCmdAction', 
+            {
+              containerID: container.shortId, 
+              cmdCommand: 'restart'
+            }
+          )
+          setContainerState({
+            containerID: container.shortId,
+            updatable: { 
+              Running: false,
+              Restarting: true,
+            }
+          })
+        }}>
         Restart
       </Button>
-      <Button height={20} marginRight={5} iconBefore="stop">
-        Stop
+      <Button 
+        height={20} 
+        marginRight={5} 
+        iconBefore={container.State.Running ? 'stop' : 'play'}
+        onClick={() => {
+          fetcher(
+            'containerCmdAction', 
+            {
+              containerID: container.shortId, 
+              cmdCommand: container.State.Running 
+                ? 'stop'
+                : 'start'
+            }
+          )
+          setContainerState({
+            containerID: container.shortId,
+            updatable: { Running: !container.State.Running }
+          })
+        }}>
+        {container.State.Running ? 'Stop' : 'Start'}
       </Button>
       <Button 
         height={20} 
         iconBefore="trash"
         onClick={() => {
-          alert('Are your sure you want to remove this container?')
+          dialog.showMessageBox({
+            type: 'warning',
+            buttons: ['Delete', 'Cancel'],
+            cancelId: 1,
+            icon: null,
+            message: 'Are you sure you want to delete?',
+            detail: `You are about to delete ${name} container.`,
+          }, async res => {
+            if(!!!res) {
+              await fetcher(
+                'containerCmdAction', 
+                {
+                  containerID: container.shortId, 
+                  cmdCommand: container.State.Running 
+                    ? 'stop'
+                    : 'start'
+                }
+              )
+              fetcher(
+                'containerCmdAction', 
+                {
+                  containerID: container.shortId, 
+                  cmdCommand: 'rm'
+                }
+              )
+              setContainerState({
+                containerID: container.shortId,
+                updatable: { 
+                  Running: false,
+                  Restarting: false
+                }
+              })
+            }
+          })
+          // alert('Are your sure you want to remove this container?')
         }}>
         Remove
       </Button>
@@ -160,7 +233,7 @@ class ContainerScreen extends Component {
       inProgress
     } = this.props
     const containers = this.props.container.containers
-    // console.log(inProgress)
+    // console.log('inProgress', inProgress)
     return Object.keys(containers).map((containerShortId, index) => {
       const container = containers[containerShortId]
       // console.log(container)
@@ -173,8 +246,15 @@ class ContainerScreen extends Component {
             height={22} 
             checked={container.State.Running} 
             onChange={() => {
-              setContainerInProgress(container.shortId)
-              fetcher('containerCmdAction', {containerID: container.shortId, cmdCommand: 'stop'})
+              fetcher(
+                'containerCmdAction', 
+                {
+                  containerID: container.shortId, 
+                  cmdCommand: container.State.Running 
+                    ? 'stop'
+                    : 'start'
+                }
+              )
               setContainerState({
                 containerID: container.shortId,
                 updatable: { Running: !container.State.Running }
@@ -192,7 +272,7 @@ class ContainerScreen extends Component {
           </div>
           {
             isHovered && <div className='container-list-action-btn-wrapper'>
-              {this.renderContainerFooter()}
+              {this.renderContainerFooter(container)}
             </div>
           }
           {/* <div className='container-list-footer'>
