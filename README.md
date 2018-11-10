@@ -31,6 +31,9 @@ I'm using react and redux with electron so if you want to contribute and need an
 Not yet.
 
 # Progress
-Nothing works yet, only the list of containers soon there will be a way to toggle containers on/off.
+Some features are working,
+- Start/Stop/Container container
+- Delete container
+- Better error handling and over all app architecture.
 
 ## * work in progress...
