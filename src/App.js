@@ -9,6 +9,7 @@ import NetworkScreen from './screens/NetworkScreen'
 import CleanUpScreen from './screens/CleanUpScreen'
 
 import GlobalTopHeader from './components/AppHeader'
+import ErrorHandler from './components/ErrorHandler/ErrorHandler'
 
 class App extends Component {
 
@@ -36,6 +37,7 @@ class App extends Component {
         <GlobalTopHeader/>
         <div className='app-body'>
           <div className='app-container'>
+            <ErrorHandler />
             {this.renderActiveScreen()}
           </div>
         </div>
