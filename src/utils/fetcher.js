@@ -5,7 +5,9 @@ import {
   setContainers, 
   setContainerStats,
   setLoadingContainer,
-  setContainerInProgress
+  setContainerInProgress,
+  updateSingleContainerByID,
+  removeContainerFromStoreByID
 } from '../actions/container'
 
 const recipes = {
@@ -24,18 +26,36 @@ const recipes = {
   getContainerStats: async () => {
     const stats = await reactToElectron('fetch-container-stats')
     store.dispatch(setContainerStats(stats))
-    // console.log('Stats:', stats)
   },
-  containerCmdAction: async (containerID, cmdCommand) => {
-    store.dispatch(setContainerInProgress(containerID))
-    const status = await reactToElectron(
-      'container-cmd-actions',
-      {
-        containerID,
-        cmdCommand
+  containerCmdAction: async payload => new Promise(async (resolve, reject) => {
+    const command = payload.cmdCommand
+    store.dispatch(setContainerInProgress(payload.containerID))
+    try {
+      const commandResponse = await reactToElectron('container-cmd-actions', payload)
+      console.log(commandResponse)
+      if(commandResponse.failed) {
+        console.log('Failed!')
       }
-    )
-    store.dispatch(setContainerInProgress(-1))
+      store.dispatch(setContainerInProgress(-1))
+      if(!['rm'].includes(command)) {
+        recipes.updateContainerByID(payload.containerID)
+      }
+      if(command === 'rm') {
+        recipes.removeContainerFromStore(payload.containerID)
+      }
+    } catch (error) {
+      console.log('Error happended')
+      console.log(error)
+      store.dispatch(setContainerInProgress(-1))
+    }
+    resolve(true)
+  }),
+  updateContainerByID: async containerID => {
+    const container = await reactToElectron('get-single-container', containerID)
+    store.dispatch(updateSingleContainerByID(container))
+  },
+  removeContainerFromStore: containerID => {
+    store.dispatch(removeContainerFromStoreByID(containerID))
   }
 }
 
