@@ -27,3 +27,13 @@ export const setContainerState = payload => ({
   type: 'SET_CONTAINER_STATE',
   payload
 })
+
+export const updateSingleContainerByID = payload => ({
+  type: 'UPDATE_SINGLE_CONTAINER_BY_ID',
+  payload
+})
+
+export const removeContainerFromStoreByID = payload => ({
+  type: 'REMOVE_CONTAINER_FROM_STORE_BY_ID',
+  payload
+})
