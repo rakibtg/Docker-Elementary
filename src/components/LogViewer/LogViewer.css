@@ -1,0 +1,21 @@
+.log-viewer-wrapper {
+  margin-top: 20px;
+  height: 350px;
+  padding-right: 20px;
+}
+
+.log-viewer-wrapper textarea#log-container {
+  border: 0px !important;
+  box-shadow: none !important;
+  margin-right: 20px;
+  resize: none;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", monospace;
+}
+
+.log-viewer-wrapper .log-view-header {
+  border: 1px solid red;
+  border-bottom: 0px;
+  height: 28px;
+  align-items: center;
+  padding-left: 16px;
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './css/ContainerScreen.css'
 import fetcher from '../utils/fetcher'
 import { connect } from 'react-redux'
-import { Switch, Strong, Pill, Button, Pane, 
+import { Switch, Strong, Pill, Button, Pane, Code, 
   Popover, Menu, toaster, Position, IconButton, Spinner } from 'evergreen-ui'
 import ContainerIdPill from '../components/ContainerIdPill'
 import TimeAgo from 'javascript-time-ago'
@@ -13,6 +13,7 @@ import {
   setContainerInProgress,
   setContainerState
 } from '../actions/container'
+import LogViewer from '../components/LogViewer/LogViewer'
 const { dialog } = window.require('electron').remote
 
 TimeAgo.locale(en)
@@ -261,14 +262,12 @@ class ContainerScreen extends Component {
             {this.renderHeadingStatus(container.State)}
             <ContainerLiveStats container={container.shortId}/>
           </div>
+          <LogViewer container={container.shortId}/>
           {
             isHovered && <div className='container-list-action-btn-wrapper'>
               {this.renderContainerFooter(container)}
             </div>
           }
-          {/* <div className='container-list-footer'>
-            From footer content
-          </div> */}
         </div>
       </div>
     })
