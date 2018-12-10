@@ -73,6 +73,13 @@ const recipes = {
   },
   removeContainerFromStore: containerID => {
     store.dispatch(removeContainerFromStoreByID(containerID))
+  },
+  viewLogs: async (containerID, logType) => {
+    const logs = await reactToElectron('get-container-logs', {
+      container     : containerID,
+      type          : logType
+    })
+    
   }
 }
 

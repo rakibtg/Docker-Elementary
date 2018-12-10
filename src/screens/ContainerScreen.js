@@ -262,7 +262,12 @@ class ContainerScreen extends Component {
             {this.renderHeadingStatus(container.State)}
             <ContainerLiveStats container={container.shortId}/>
           </div>
-          <LogViewer container={container.shortId}/>
+          {
+            container.logData 
+              ? container.logData
+              : 'Nope'
+          }
+          {/* <LogViewer container={container.shortId}/> */}
           {
             isHovered && <div className='container-list-action-btn-wrapper'>
               {this.renderContainerFooter(container)}

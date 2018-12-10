@@ -8,23 +8,23 @@ import {
 } from 'evergreen-ui'
 import { connect } from 'react-redux'
 
-class ContainerLiveStats extends Component {
+class LogViewer extends Component {
 
   render() {
 
     const { container } = this.props
 
     return <Pane 
-        width         = "100%" 
-        display       = "flex" 
-        position      = "relative"
-        className     = "log-viewer-wrapper"
-        flexDirection = "column"
+        width           = "100%" 
+        display         = "flex" 
+        position        = "relative"
+        className       = "log-viewer-wrapper"
+        flexDirection   = "column"
       >
 
       <Pane
-        display = "flex"
-        className= "log-view-header"
+        display     = "flex"
+        className   = "log-view-header"
       >
         <Strong size={300} color="muted">LOGS</Strong>
         <IconButton 
@@ -58,4 +58,4 @@ class ContainerLiveStats extends Component {
 const mapStateToProps = state => ({
   stats: state.container.stats
 })
-export default connect(mapStateToProps, null)(ContainerLiveStats)
+export default connect(mapStateToProps, null)(LogViewer)
