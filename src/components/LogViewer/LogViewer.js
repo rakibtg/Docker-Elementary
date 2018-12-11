@@ -6,13 +6,31 @@ import {
   IconButton, 
   Strong 
 } from 'evergreen-ui'
+import {closeLogExplorer} from '../../actions/nodesLog'
+import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
+
 
 class LogViewer extends Component {
 
+  // shouldComponentUpdate(nextProps) {
+  //   const { nodesLog, container } = this.props
+  //   const futureNodesLog = nextProps.nodesLog
+  //   console.log('futureNodesLog', futureNodesLog)
+  //   console.log('nodesLog', nodesLog)
+  //   if(nodesLog.nodeID !== "") return true
+  //   return futureNodesLog.nodeID === container
+  // }
+
   render() {
 
-    const { container } = this.props
+    const { 
+      nodesLog, 
+      container, 
+      closeLogExplorer 
+    } = this.props
+
+    if(nodesLog.nodeID !== container) return null
 
     return <Pane 
         width           = "100%" 
@@ -26,7 +44,7 @@ class LogViewer extends Component {
         display     = "flex"
         className   = "log-view-header"
       >
-        <Strong size={300} color="muted">LOGS</Strong>
+        <Strong size={300} color="muted">{nodesLog.title}</Strong>
         <IconButton 
           top             = {0} 
           icon            = "cross" 
@@ -38,24 +56,28 @@ class LogViewer extends Component {
           marginTop       = {5}
           appearance      = "primary" 
           marginRight     = {25} 
+          onClick         = {() => {
+            closeLogExplorer()
+          }}
         />
       </Pane>
-
 
       <Textarea 
         id        = "log-container" 
         wrap      = "off"
-        readonly  = "1"
-      >
-{`Helo memeek
-  ok?
-      there`}
-      </Textarea>
+        readOnly  = "1"
+        value     = {nodesLog.data}
+      ></Textarea>
     </Pane>
   }
 }
 
-const mapStateToProps = state => ({
-  stats: state.container.stats
-})
-export default connect(mapStateToProps, null)(LogViewer)
+const mapStateToProps = state => {
+  return {
+    nodesLog: state.nodesLog
+  }
+}
+
+const mapDispatchToProps = dispatch => bindActionCreators( { closeLogExplorer }, dispatch )
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogViewer)
