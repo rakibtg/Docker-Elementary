@@ -2,6 +2,7 @@ const { ipcMain } = require('electron')
 const containerController = require('../controllers/containers/fetch-containers')
 const fetchContainerStats = require('../controllers/containers/fetch-stats')
 const containerCmdActions = require('../controllers/containers/container-cmd-actions')
+const nodeLogs            = require('../controllers/nodeLogs')
 
 module.exports = communicator = async () => {
 
@@ -40,5 +41,12 @@ module.exports = communicator = async () => {
     const container = await containerController.fetchContainerByID(payloads.options)
     event.sender.send('get-single-container', JSON.stringify(container))
   })
+
+  ipcMain.on('get-container-logs-message', async (event, arg) => {
+    const payloads    = JSON.parse(arg)
+    const logs        = await nodeLogs.getContainerLogs(payloads.nodeID)
+    event.sender.send('get-single-container', logs)
+  })
+
 
 }
