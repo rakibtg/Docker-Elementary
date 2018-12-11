@@ -10,7 +10,7 @@ class FilterContainers extends Component {
   render() {
     const {currentFilterForContainer} = this.state
     const {loadingContainerFilter, screen} = this.props
-    if(screen != 'container') return null
+    if(screen !== 'container') return null
     return <SegmentedControl
       width={400}
       height={24}
