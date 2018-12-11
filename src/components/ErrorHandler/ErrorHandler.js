@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dialog, Text, Icon } from 'evergreen-ui'
+import { Dialog } from 'evergreen-ui'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { omitError } from '../../actions/error'
