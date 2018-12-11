@@ -1,3 +1,10 @@
+export const nodesLog = {
+  data      : '',
+  title     : '',
+  other     : {},
+  nodeID    : '',
+}
+
 export default {
   screen: 'container',
   container: {
@@ -12,5 +19,6 @@ export default {
     title           : 'Message Alert',
     confirmLabel    : 'Ok',
     hasCancel       : false
-  }
+  },
+  nodesLog
 }
