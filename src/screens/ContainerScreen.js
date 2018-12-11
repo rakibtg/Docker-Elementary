@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './css/ContainerScreen.css'
 import fetcher from '../utils/fetcher'
 import { connect } from 'react-redux'
-import { Switch, Strong, Pill, Button, Pane, 
+import { Switch, Strong, Pill, Button, Pane,
   Popover, Menu, toaster, Position, IconButton, Spinner } from 'evergreen-ui'
 import ContainerIdPill from '../components/ContainerIdPill'
 import TimeAgo from 'javascript-time-ago'
@@ -13,6 +13,7 @@ import {
   setContainerInProgress,
   setContainerState
 } from '../actions/container'
+import LogViewer from '../components/LogViewer/LogViewer'
 const { dialog } = window.require('electron').remote
 
 TimeAgo.locale(en)
@@ -149,7 +150,14 @@ class ContainerScreen extends Component {
           <Menu>
             <Menu.Group>
               <Menu.Item
-                onSelect={() => toaster.notify('Share')}
+                onSelect={
+                  () => fetcher('openLogViewer', {
+                    title: 'Container Logs',
+                    nodeID: container.shortId,
+                    data: 'Hello mellos',
+                    other: {}
+                  })
+                }
                 icon='clipboard'
                 height={20}
                 paddingTop={14}
@@ -219,7 +227,7 @@ class ContainerScreen extends Component {
   render() {
     const { mouseHoveredOn } = this.state
     const { 
-      setContainerInProgress, 
+      // setContainerInProgress, 
       setContainerState,
       inProgress
     } = this.props
@@ -255,29 +263,27 @@ class ContainerScreen extends Component {
         </div>
         <div className='container-list-body' onMouseEnter={() => this.handleMouseHover(index)}>
           <div className='container-list-inline'>
-            { inProgress == containerShortId && <Spinner size={20} marginRight={10} /> }
+            { inProgress === containerShortId && <Spinner size={20} marginRight={10} /> }
             <Strong marginRight={16}>{container.Name.replace('/', '')}</Strong>
             {ContainerIdPill(container.shortId)}
             {this.renderHeadingStatus(container.State)}
             <ContainerLiveStats container={container.shortId}/>
           </div>
+          <LogViewer container={container.shortId}/>
           {
             isHovered && <div className='container-list-action-btn-wrapper'>
               {this.renderContainerFooter(container)}
             </div>
           }
-          {/* <div className='container-list-footer'>
-            From footer content
-          </div> */}
         </div>
       </div>
     })
   }
 }
 const mapStateToProps = state => ({
-  container: state.container,
-  stats: state.container.stats,
-  inProgress: state.container.inProgress
+  container     : state.container,
+  stats         : state.container.stats,
+  inProgress    : state.container.inProgress
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators( {

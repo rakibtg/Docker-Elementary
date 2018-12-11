@@ -20,6 +20,10 @@ import {
   raiseError
 } from '../actions/error'
 
+import {
+  openLogExplorer
+} from '../actions/nodesLog'
+
 const recipes = {
   getContainers: async options => {
     const filter = options.filter ? options.filter : 'active'
@@ -73,6 +77,10 @@ const recipes = {
   },
   removeContainerFromStore: containerID => {
     store.dispatch(removeContainerFromStoreByID(containerID))
+  },
+  openLogViewer: async data => {
+    const logs = await reactToElectron('get-container-logs', data)
+    store.dispatch(openLogExplorer(data))
   }
 }
 

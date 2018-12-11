@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore } from 'redux'
 import initialState from './data'
 import rootReducer from '../reducers'
 
