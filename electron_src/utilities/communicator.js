@@ -2,7 +2,7 @@ const { ipcMain } = require('electron')
 const containerController = require('../controllers/containers/fetch-containers')
 const fetchContainerStats = require('../controllers/containers/fetch-stats')
 const containerCmdActions = require('../controllers/containers/container-cmd-actions')
-const nodeLogs            = require('../controllers/nodeLogs')
+const containerLogs = require('../controllers/container-logs')
 
 module.exports = communicator = async () => {
 
@@ -38,15 +38,18 @@ module.exports = communicator = async () => {
 
   ipcMain.on('get-single-container-message', async (event, arg) => {
     const payloads = JSON.parse(arg)
-    const container = await containerController.fetchContainerByID(payloads.options)
-    event.sender.send('get-single-container', JSON.stringify(container))
+    try {
+      const container = await containerController.fetchContainerByID(payloads.options)
+      event.sender.send('get-single-container', JSON.stringify(container))
+    } catch (error) {
+      console.log(error)
+    }
   })
 
   ipcMain.on('get-container-logs-message', async (event, arg) => {
-    const payloads    = JSON.parse(arg)
-    const logs        = await nodeLogs.getContainerLogs(payloads.nodeID)
-    event.sender.send('get-single-container', logs)
+    const payloads = JSON.parse(arg)
+    const logs = await containerLogs(payloads.options.nodeID)
+    event.sender.send('get-container-logs', JSON.stringify(logs))
   })
-
 
 }

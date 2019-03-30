@@ -67,7 +67,7 @@ const recipes = {
         recipes.removeContainerFromStore(payload.containerID)
       }
     } catch (error) {
-      // I think this block will never gets executed as from the electron event we never received an error response.
+      console.log('Fetcher.js Error - 9378', error)
     }
     resolve(true)
   }),
@@ -78,10 +78,19 @@ const recipes = {
   removeContainerFromStore: containerID => {
     store.dispatch(removeContainerFromStoreByID(containerID))
   },
-  openLogViewer: async data => {
-    const logs = await reactToElectron('get-container-logs', data)
-    store.dispatch(openLogExplorer(data))
+  openLogViewer: async ({title, nodeID, data = 'No logs are found!', other}) => {
+    try {
+      data = await reactToElectron('get-container-logs', { nodeID })
+    } catch (error) {
+      console.log('Fetcher.js Error - 2626', error)
+    }
+    store.dispatch(openLogExplorer({
+      title,
+      nodeID,
+      data: data.logs,
+      other
+    }))
   }
 }
 
-export default async (recipe, options = {}) => recipes[ recipe ](options)
+export default async (recipe, options = {}) => recipes[ recipe ]( options )

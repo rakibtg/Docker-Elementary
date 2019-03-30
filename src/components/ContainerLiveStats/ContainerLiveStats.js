@@ -16,7 +16,7 @@ class ContainerLiveStats extends Component {
     const validStat = stat[0] ? stat[0] : false
 
     if(!validStat) return null
-    // console.log(validStat)
+    
     return <>
       <Pill 
         paddingLeft={10} 

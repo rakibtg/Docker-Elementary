@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import './css/ContainerScreen.css'
 import fetcher from '../utils/fetcher'
 import { connect } from 'react-redux'
-import { Switch, Strong, Pill, Button, Pane,
-  Popover, Menu, toaster, Position, IconButton, Spinner } from 'evergreen-ui'
+import { Switch, Strong, Pill, Button, 
+  Pane, Popover, Menu, toaster, Position, 
+  IconButton, Spinner } from 'evergreen-ui'
 import ContainerIdPill from '../components/ContainerIdPill'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ContainerLiveStats from '../components/ContainerLiveStats/ContainerLiveStats'
-import {bindActionCreators} from 'redux'
+import { bindActionCreators } from 'redux'
 import { 
   setContainerInProgress,
   setContainerState
@@ -68,28 +69,31 @@ class ContainerScreen extends Component {
     return <Pane 
       display='flex'
       marginTop={12}>
-      <Button 
-        height={20} 
-        marginRight={5} 
-        iconBefore="refresh"
-        onClick={() => {
-          fetcher(
-            'containerCmdAction', 
-            {
-              containerID: container.shortId, 
-              cmdCommand: 'restart'
-            }
-          )
-          setContainerState({
-            containerID: container.shortId,
-            updatable: { 
-              Running: false,
-              Restarting: true,
-            }
-          })
-        }}>
-        Restart
-      </Button>
+      {
+        container.State.Running && 
+        <Button 
+          height={20} 
+          marginRight={5} 
+          iconBefore="refresh"
+          onClick={() => {
+            fetcher(
+              'containerCmdAction', 
+              {
+                containerID: container.shortId, 
+                cmdCommand: 'restart'
+              }
+            )
+            setContainerState({
+              containerID: container.shortId,
+              updatable: { 
+                Running: false,
+                Restarting: true,
+              }
+            })
+          }}>
+          Restart
+        </Button>
+      }
       <Button 
         height={20} 
         marginRight={5} 
@@ -144,83 +148,86 @@ class ContainerScreen extends Component {
         }}>
         Remove
       </Button>
-      <Popover
-        position={Position.BOTTOM_LEFT}
-        content={
-          <Menu>
-            <Menu.Group>
-              <Menu.Item
-                onSelect={
-                  () => fetcher('openLogViewer', {
-                    title: 'Container Logs',
-                    nodeID: container.shortId,
-                    data: 'Hello mellos',
-                    other: {}
-                  })
-                }
-                icon='clipboard'
-                height={20}
-                paddingTop={14}
-                paddingBottom={14}
-              >
-                Logs
-              </Menu.Item>
-              <Menu.Item
-                onSelect={() => toaster.notify('Share')}
-                icon='info-sign'
-                height={20}
-                paddingTop={14}
-                paddingBottom={14}
-              >
-                Info
-              </Menu.Item>
-              <Menu.Item
-                onSelect={() => toaster.notify('Share')}
-                icon='pause'
-                height={20}
-                paddingTop={14}
-                paddingBottom={14}
-              >
-                Pause all processes
-              </Menu.Item>
-              <Menu.Item
-                onSelect={() => toaster.notify('Move')}
-                icon='ban-circle'
-                height={20}
-                paddingTop={14}
-                paddingBottom={14}
-              >
-                Kill
-              </Menu.Item>
-              <Menu.Item
-                onSelect={() => toaster.notify('Rename')}
-                icon='edit'
-                height={20}
-                paddingTop={14}
-                paddingBottom={14}
-              >
-                Rename
-              </Menu.Item>
-              <Menu.Item
-                onSelect={() => toaster.notify('Rename')}
-                icon='cell-tower'
-                height={20}
-                paddingTop={14}
-                paddingBottom={14}
-              >
-                Port
-              </Menu.Item>
-            </Menu.Group>
-          </Menu>
-        }
-      >
-        <IconButton 
-          height={20} 
-          icon='cog'
-          width={40}
-          marginLeft={5}
-        />
-      </Popover>
+      {
+        container.State.Running && 
+          <Popover
+            position={Position.BOTTOM_LEFT}
+            content={
+              <Menu>
+                <Menu.Group>
+                  <Menu.Item
+                    onSelect={
+                      () => fetcher('openLogViewer', {
+                        title: 'Container Logs',
+                        nodeID: container.shortId,
+                        data: 'Hello mellos',
+                        other: {}
+                      })
+                    }
+                    icon='clipboard'
+                    height={20}
+                    paddingTop={14}
+                    paddingBottom={14}
+                  >
+                    Logs
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => toaster.notify('Share')}
+                    icon='info-sign'
+                    height={20}
+                    paddingTop={14}
+                    paddingBottom={14}
+                  >
+                    Info
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => toaster.notify('Share')}
+                    icon='pause'
+                    height={20}
+                    paddingTop={14}
+                    paddingBottom={14}
+                  >
+                    Pause all processes
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => toaster.notify('Move')}
+                    icon='ban-circle'
+                    height={20}
+                    paddingTop={14}
+                    paddingBottom={14}
+                  >
+                    Kill
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => toaster.notify('Rename')}
+                    icon='edit'
+                    height={20}
+                    paddingTop={14}
+                    paddingBottom={14}
+                  >
+                    Rename
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => toaster.notify('Rename')}
+                    icon='cell-tower'
+                    height={20}
+                    paddingTop={14}
+                    paddingBottom={14}
+                  >
+                    Port
+                  </Menu.Item>
+                </Menu.Group>
+              </Menu>
+            }
+          >
+            <IconButton 
+              height={20} 
+              icon='cog'
+              width={40}
+              marginLeft={5}
+            />
+          </Popover>
+      }
     </Pane>
   }
 
