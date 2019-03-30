@@ -1,8 +1,8 @@
-const cmd = require('node-cmd')
+const child_process = require( 'child_process' )
 
 module.exports = cmdLikeAPro = command => new Promise((resolve, reject) => {
-  cmd.get(command, (err, data, stderr) => {
-    if(err || stderr) reject(err || stderr)
-    else resolve(data)
+  child_process.exec(command, {maxBuffer : 1500 * 1024}, function(error, stdout, stderr) {
+    if( !!error ) reject( error )
+    else resolve( stdout || stderr )
   })
 })
