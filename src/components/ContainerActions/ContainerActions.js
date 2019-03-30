@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Pill } from 'evergreen-ui'
 import { connect } from 'react-redux'
 
 class ContainerLiveStats extends Component {
@@ -10,7 +9,7 @@ class ContainerLiveStats extends Component {
     const validStat = stat[0] ? stat[0] : false
 
     if(!validStat) return null
-    // console.log(validStat)
+    
     return <div>hello</div>
   }
 }
